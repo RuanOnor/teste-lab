@@ -6,11 +6,11 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: 'https://github.com/RuanOnor/teste-lab.git' # TROQUE O USUARIO AQUI
+    repoURL: 'https://github.com/RuanOnor/teste-lab.git'
     targetRevision: HEAD
     path: .
   destination:
-    server: '[https://kubernetes.default.svc](https://kubernetes.default.svc)'
+    server: 'https://kubernetes.default.svc'
     namespace: default
   syncPolicy:
     automated:

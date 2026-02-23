@@ -1,4 +1,4 @@
-
+---
 # Token temporário de dev do Vault para o laboratório
 apiVersion: v1
 kind: Secret
@@ -44,3 +44,44 @@ spec:
     remoteRef:
       key: secret/odoo
       property: senha
+
+
+
+Arquivo 2: 02-postgres.yaml (O Banco de Dados)
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: odoo-db
+spec:
+  selector:
+    matchLabels:
+      app: odoo-db
+  template:
+    metadata:
+      labels:
+        app: odoo-db
+    spec:
+      containers:
+      - name: postgres
+        image: postgres:15
+        env:
+        - name: POSTGRES_USER
+          value: odoo
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: odoo-senha-banco # Consome a senha injetada pelo ESO
+              key: senha-postgres
+        - name: POSTGRES_DB
+          value: postgres
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: odoo-db
+spec:
+  ports:
+  - port: 5432
+  selector:
+    app: odoo-db
