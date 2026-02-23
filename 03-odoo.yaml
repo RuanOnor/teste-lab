@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: odoo
+spec:
+  selector:
+    matchLabels:
+      app: odoo
+  template:
+    metadata:
+      labels:
+        app: odoo
+    spec:
+      containers:
+      - name: odoo
+        image: odoo:16.0
+        env:
+        - name: HOST
+          value: odoo-db # Aponta para o serviço do Postgres acima
+        - name: USER
+          value: odoo
+        - name: PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: odoo-senha-banco # Consome a mesma senha injetada pelo ESO
+              key: senha-postgres
+        ports:
+        - containerPort: 8069
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: odoo
+spec:
+  type: NodePort
+  ports:
+  - port: 8069
+    nodePort: 30069 # Porta fixa para acessarmos do nosso navegador
+  selector:
+    app: odoo
